@@ -10,9 +10,13 @@ file "ext/FastNoise.so" => "ext/FastNoise_wrap.cxx" do
   sh "make"
 end
 
+file "lib/fast_noise/FastNoise.so" => "ext/FastNoise.so" do
+  cp "ext/FastNoise.so", "lib/fast_noise/FastNoise.so"
+end
+
 # Rake::ExtensionTask.new("FastNoise") do | ext |
 #   ext.ext_dir = 'ext'
 # end
-task :default => ["ext/FastNoise.so"]
+task :default => ["lib/fast_noise/FastNoise.so"]
 
 
