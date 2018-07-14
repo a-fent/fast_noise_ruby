@@ -17,14 +17,14 @@ Example
 To generate one piece of noise.
 
 
-`
+``` ruby
 # Create a new noise generator
 fn = FastNoise::FastNoise.new
 # Specify what kind of 
 fn.set_noise_type(FastNoise::FastNoise::Perlin)
 # Access a single noise value
 fn.get_noise(4,4)
-`
+```
 
 More information on the various kinds of generator that are available,
 and the various parameters available for each can be found on the pages
