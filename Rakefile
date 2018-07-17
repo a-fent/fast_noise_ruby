@@ -1,13 +1,12 @@
-
-
 file "ext/FastNoise_wrap.cxx" => "ext/FastNoise.i" do
   sh "swig -c++ -ruby -autorename ext/FastNoise.i"
 end
 
 file "ext/FastNoise.so" => "ext/FastNoise_wrap.cxx" do
-  sh "ruby ext/extconf.rb"
-  cd "ext"
-  sh "make"
+  cd "ext" do 
+    sh "ruby extconf.rb"
+    sh "make"
+  end
 end
 
 file "lib/fast_noise/FastNoise.so" => "ext/FastNoise.so" do
