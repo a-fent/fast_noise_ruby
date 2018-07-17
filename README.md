@@ -18,21 +18,28 @@ To generate one piece of noise.
 
 
 ``` ruby
-# Create a new noise generator
-fn = FastNoise::FastNoise.new
-# Specify what kind of 
-fn.set_noise_type(FastNoise::FastNoise::Perlin)
-# Access a single noise value
-fn.get_noise(4,4)
+require 'fast_noise'
+# Create a new noise generator with pre-set type
+fn = FastNoise::Perlin.new
+# Access a single noise value (2d)
+fn.noise(4,3)
+# alternative syntax
+fn[4, 3]
+
+# Generic generator
+fn = FastNoise::Generator.new
+# Give the generator a reproducible integer seed
+fn.seed = 49
+# Get a specific noise type
+fn.white_noise(2, 7)
 ```
 
 More information on the various kinds of generator that are available,
 and the various parameters available for each can be found on the pages
-of the <underlying C++ library, FastNoise
-https://github.com/Auburns/FastNoise>, and <its wiki https://github.com/Auburns/FastNoise/wiki>.
+of the [underlying C++ library, FastNoise](https://github.com/Auburns/FastNoise), and [its wiki](https://github.com/Auburns/FastNoise/wiki).
 
-I will likely make some small improvements to the Ruby interface to make
-it slightly more attractive to use.
+I will likely make some further small improvements to the Ruby interface
+to make the features more clearly accessible.
 
 Implementation
 --------------
@@ -43,24 +50,25 @@ procedures in C++; the code for these is directly adopted from the
 patches from <one of its forks https://github.com/realisim/FastNoise> to
 add periodicity.
 
-The wrapper around it is a very basic SWIG wrapper (version 3.0.8).
+The wrapper around it is a basic SWIG wrapper (generated with version
+3.0.8). SWIG may be used to regenerate the wrapper if wanted.
 
 Other Ruby Noise Modules
 ------------------------
 
-There is an existing Ruby C++ module which provides classic Perlin and
-Simplex noise in 2 and 3 dimensions here:
-https://github.com/Spooner/ruby-perlin 
+There is an [existing Ruby C++ module which provides classic Perlin and
+Simplex noise](https://github.com/Spooner/ruby-perlin) in 2 and 3
+dimensions, installed with "`gem install perlin`".
 
-The name of this module notwithstanding, it makes no claims to be fast
-in comparison to the existing implementation. If anything, it is
-slightly slower, but both are extremely fast, and can produce hundreds
-of thousands of points in under a second. This module, however, offers a
-wider range of noise types, and, most important for me, periodic noise
-(noise that can be tiled).
+Compared to this other implementation, the module here makes no claim to
+be faster, its name notwithstanding. If anything, it is slightly slower,
+but both are extremely fast, and can produce hundreds of thousands of
+points in under a second. This module, however, offers a wider range of
+noise types, and, most important for me, periodic noise (noise that can
+be tiled).
 
-There is also an existing pure-Ruby implementation of Perlin,
-`ruby_perlin`, here: https://github.com/junegunn/perlin_noise
+There is also an [existing pure-Ruby implementation of
+Perlin](https://github.com/junegunn/perlin_noise), `ruby_perlin`.
 Unsurprisingly for a set of functions that require a lot of mathematical
 operations, the pure ruby implementation is several orders of magnitude
 slower.
