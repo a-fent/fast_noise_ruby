@@ -1,2 +1,4 @@
 /mkmf.log
-/lib/fast_noise/FastNoise.so
+*.o
+*.so
+*.def
