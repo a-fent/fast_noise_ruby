@@ -46,8 +46,8 @@ Implementation
 
 I take no credit for the actual implementation of the various generation
 procedures in C++; the code for these is directly adopted from the
-<FastNoise C++ library https://github.com/Auburns/FastNoise> plus
-patches from <one of its forks https://github.com/realisim/FastNoise> to
+[FastNoise C++ library](https://github.com/Auburns/FastNoise) plus
+patches from [one of its forks](https://github.com/realisim/FastNoise) to
 add periodicity.
 
 The wrapper around it is a basic SWIG wrapper (generated with version
