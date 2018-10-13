@@ -1,6 +1,11 @@
-MIT License
+MIT Licence
 
 Copyright (c) 2018 Alex Fenton
+
+The FastNoise C++ library from https://github.com/Auburns/FastNoise is
+used here under the MIT License and is
+
+Copyright (c) 2017 Jordan Peck
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
