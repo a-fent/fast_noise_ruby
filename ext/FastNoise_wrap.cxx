@@ -131,7 +131,7 @@ template <typename T> T SwigValueInit() {
 
 /* calling conventions for Windows */
 #ifndef SWIGSTDCALL
-# if defined(_WIN32) || defined(__WIN32__)
+# if defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
 #   define SWIGSTDCALL __stdcall
 # else
 #   define SWIGSTDCALL
@@ -255,7 +255,7 @@ template <typename T> T SwigValueInit() {
 
 /* calling conventions for Windows */
 #ifndef SWIGSTDCALL
-# if defined(_WIN32) || defined(__WIN32__)
+# if defined(_WIN32) || defined(__WIN32__) || defined(__CYGWIN__)
 #   define SWIGSTDCALL __stdcall
 # else
 #   define SWIGSTDCALL
@@ -1882,7 +1882,7 @@ SWIG_ruby_failed(void)
 } 
 
 
-/*@SWIG:/usr/share/swig/3.0.12/ruby/rubyprimtypes.swg,19,%ruby_aux_method@*/
+/*@SWIG:/usr/share/swig3.0/ruby/rubyprimtypes.swg,19,%ruby_aux_method@*/
 SWIGINTERN VALUE SWIG_AUX_NUM2LONG(VALUE *args)
 {
   VALUE obj = args[0];
@@ -1971,7 +1971,7 @@ inline int SWIG_isfinite_func(T x) {
 #endif
 
 
-/*@SWIG:/usr/share/swig/3.0.12/ruby/rubyprimtypes.swg,19,%ruby_aux_method@*/
+/*@SWIG:/usr/share/swig3.0/ruby/rubyprimtypes.swg,19,%ruby_aux_method@*/
 SWIGINTERN VALUE SWIG_AUX_NUM2DBL(VALUE *args)
 {
   VALUE obj = args[0];
