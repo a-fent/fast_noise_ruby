@@ -16,4 +16,4 @@ file "lib/fast_noise/FastNoise.so" => "ext/FastNoise.so" do
 end
 
 task :swig => ["ext/FastNoise_wrap.cxx"]
-task :default => ["lib/fast_noise/FastNoise.so", :spec]
+task :default => ["lib/fast_noise/FastNoise.so"]
