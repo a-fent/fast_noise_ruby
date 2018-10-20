@@ -1,6 +1,10 @@
 // Very basic wrapping for FastNoise
 %module FastNoise
 
+%{
+#include "FastNoise.h"
+%}
+
 
 %rename("seed=")                         FastNoise::SetSeed;
 %rename("seed")                          FastNoise::GetSeed;
@@ -47,9 +51,22 @@
 %rename("white_noise")                   FastNoise::GetWhiteNoise;
 %rename("white_noise_int")               FastNoise::GetWhiteNoiseInt;
 
+
 %include FastNoise.h
 
-%{
-#include "FastNoise.h"
-%}
-
+%extend FastNoise {
+ public: 
+  VALUE segment(int w, int h) {
+	VALUE height_map = rb_ary_new2(w);
+	for (int x = 0; x < w; x++) {
+	  VALUE row = rb_ary_new2(h);
+		for (int y = 0; y < h; y++) {
+		  rb_ary_store(row,
+					   y,
+					   SWIG_From_float($self->GetNoise(x,y)));
+		}
+	  rb_ary_store(height_map, x, row);
+	}
+	return height_map;
+  }
+};
