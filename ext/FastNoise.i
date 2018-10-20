@@ -55,18 +55,52 @@
 %include FastNoise.h
 
 %extend FastNoise {
- public: 
+ public:
+  // Returns an array of arrays for the integer values 0->w, 0->h
   VALUE segment(int w, int h) {
 	VALUE height_map = rb_ary_new2(w);
 	for (int x = 0; x < w; x++) {
 	  VALUE row = rb_ary_new2(h);
 		for (int y = 0; y < h; y++) {
-		  rb_ary_store(row,
-					   y,
-					   SWIG_From_float($self->GetNoise(x,y)));
+		  rb_ary_store(row, y, SWIG_From_float($self->GetNoise(x,y)));
 		}
 	  rb_ary_store(height_map, x, row);
 	}
 	return height_map;
   }
+  float simplex_periodic(float x, float y,
+						  int period_x, int period_y) {
+
+	float dx = x / period_x;
+	float dy = y / period_y;
+	
+	float nx = cos(dx*2*M_PI) * (2*M_PI);
+	float ny = cos(dy*2*M_PI) * (2*M_PI);
+	float nz = sin(dx*2*M_PI) * (2*M_PI);
+	float nw = sin(dy*2*M_PI) * (2*M_PI);
+
+	return $self->GetSimplex(nx, ny, nz, nw);
+  }
+
+  // Returns an array with wrapping simplex values
+  VALUE simplex_periodic_tile(int w, int h) {
+	VALUE height_map = rb_ary_new2(w);
+	float dx, dy, nx, ny, nz, nw;
+
+	for (int x = 0; x < w; x++) {
+	  VALUE row = rb_ary_new2(h);
+	  dx = float(x) / w;
+	  nx = cos(dx*2*M_PI) * (2*M_PI);
+	  nz = sin(dx*2*M_PI) * (2*M_PI);
+	  for (int y = 0; y < h; y++) {
+		dy = float(y) / h;
+		ny = cos(dy*2*M_PI) * (2*M_PI);
+		nw = sin(dy*2*M_PI) * (2*M_PI);
+		rb_ary_store(row, y, SWIG_From_float($self->GetSimplex(nx, ny, nz, nw)));
+	  }
+	  rb_ary_store(height_map, x, row);
+	}
+	return height_map;
+  }
+  
 };
