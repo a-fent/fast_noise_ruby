@@ -1855,6 +1855,9 @@ static VALUE mFastNoise;
 #include <stdexcept>
 
 
+#include "FastNoise.h"
+
+
 #include <limits.h>
 #if !defined(SWIG_NO_LLONG_MAX)
 # if !defined(LLONG_MAX) && defined(__GNUC__) && defined (__LONG_LONG_MAX__)
@@ -2032,9 +2035,48 @@ SWIG_From_bool  (bool value)
   return value ? Qtrue : Qfalse;
 }
 
+SWIGINTERN VALUE FastNoise_segment(FastNoise *self,int w,int h){
+	VALUE height_map = rb_ary_new2(w);
+	for (int x = 0; x < w; x++) {
+	  VALUE row = rb_ary_new2(h);
+		for (int y = 0; y < h; y++) {
+		  rb_ary_store(row, y, SWIG_From_float(self->GetNoise(x,y)));
+		}
+	  rb_ary_store(height_map, x, row);
+	}
+	return height_map;
+  }
+SWIGINTERN float FastNoise_simplex_periodic(FastNoise *self,float x,float y,int period_x,int period_y){
 
-#include "FastNoise.h"
+	float dx = x / period_x;
+	float dy = y / period_y;
+	
+	float nx = cos(dx*2*M_PI) * (2*M_PI);
+	float ny = cos(dy*2*M_PI) * (2*M_PI);
+	float nz = sin(dx*2*M_PI) * (2*M_PI);
+	float nw = sin(dy*2*M_PI) * (2*M_PI);
 
+	return self->GetSimplex(nx, ny, nz, nw);
+  }
+SWIGINTERN VALUE FastNoise_simplex_period_tile(FastNoise *self,int w,int h){
+	VALUE height_map = rb_ary_new2(w);
+	float dx, dy, nx, ny, nz, nw;
+
+	for (int x = 0; x < w; x++) {
+	  VALUE row = rb_ary_new2(h);
+	  dx = float(x) / w;
+	  nx = cos(dx*2*M_PI) * (2*M_PI);
+	  nz = sin(dx*2*M_PI) * (2*M_PI);
+	  for (int y = 0; y < h; y++) {
+		dy = float(y) / h;
+		ny = cos(dy*2*M_PI) * (2*M_PI);
+		nw = sin(dy*2*M_PI) * (2*M_PI);
+		rb_ary_store(row, y, SWIG_From_float(self->GetSimplex(nx, ny, nz, nw)));
+	  }
+	  rb_ary_store(height_map, x, row);
+	}
+	return height_map;
+  }
 static swig_class SwigClassFastNoise;
 
 SWIGINTERN VALUE
@@ -5619,6 +5661,142 @@ fail:
 }
 
 
+SWIGINTERN VALUE
+_wrap_FastNoise_segment(int argc, VALUE *argv, VALUE self) {
+  FastNoise *arg1 = (FastNoise *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_FastNoise, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "FastNoise *","segment", 1, self )); 
+  }
+  arg1 = reinterpret_cast< FastNoise * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","segment", 2, argv[0] ));
+  } 
+  arg2 = static_cast< int >(val2);
+  ecode3 = SWIG_AsVal_int(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","segment", 3, argv[1] ));
+  } 
+  arg3 = static_cast< int >(val3);
+  result = (VALUE)FastNoise_segment(arg1,arg2,arg3);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_FastNoise_simplex_periodic(int argc, VALUE *argv, VALUE self) {
+  FastNoise *arg1 = (FastNoise *) 0 ;
+  float arg2 ;
+  float arg3 ;
+  int arg4 ;
+  int arg5 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  float val2 ;
+  int ecode2 = 0 ;
+  float val3 ;
+  int ecode3 = 0 ;
+  int val4 ;
+  int ecode4 = 0 ;
+  int val5 ;
+  int ecode5 = 0 ;
+  float result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 4) || (argc > 4)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 4)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_FastNoise, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "FastNoise *","simplex_periodic", 1, self )); 
+  }
+  arg1 = reinterpret_cast< FastNoise * >(argp1);
+  ecode2 = SWIG_AsVal_float(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "float","simplex_periodic", 2, argv[0] ));
+  } 
+  arg2 = static_cast< float >(val2);
+  ecode3 = SWIG_AsVal_float(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "float","simplex_periodic", 3, argv[1] ));
+  } 
+  arg3 = static_cast< float >(val3);
+  ecode4 = SWIG_AsVal_int(argv[2], &val4);
+  if (!SWIG_IsOK(ecode4)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode4), Ruby_Format_TypeError( "", "int","simplex_periodic", 4, argv[2] ));
+  } 
+  arg4 = static_cast< int >(val4);
+  ecode5 = SWIG_AsVal_int(argv[3], &val5);
+  if (!SWIG_IsOK(ecode5)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode5), Ruby_Format_TypeError( "", "int","simplex_periodic", 5, argv[3] ));
+  } 
+  arg5 = static_cast< int >(val5);
+  result = (float)FastNoise_simplex_periodic(arg1,arg2,arg3,arg4,arg5);
+  vresult = SWIG_From_float(static_cast< float >(result));
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
+SWIGINTERN VALUE
+_wrap_FastNoise_simplex_period_tile(int argc, VALUE *argv, VALUE self) {
+  FastNoise *arg1 = (FastNoise *) 0 ;
+  int arg2 ;
+  int arg3 ;
+  void *argp1 = 0 ;
+  int res1 = 0 ;
+  int val2 ;
+  int ecode2 = 0 ;
+  int val3 ;
+  int ecode3 = 0 ;
+  VALUE result;
+  VALUE vresult = Qnil;
+  
+  if ((argc < 2) || (argc > 2)) {
+    rb_raise(rb_eArgError, "wrong # of arguments(%d for 2)",argc); SWIG_fail;
+  }
+  res1 = SWIG_ConvertPtr(self, &argp1,SWIGTYPE_p_FastNoise, 0 |  0 );
+  if (!SWIG_IsOK(res1)) {
+    SWIG_exception_fail(SWIG_ArgError(res1), Ruby_Format_TypeError( "", "FastNoise *","simplex_period_tile", 1, self )); 
+  }
+  arg1 = reinterpret_cast< FastNoise * >(argp1);
+  ecode2 = SWIG_AsVal_int(argv[0], &val2);
+  if (!SWIG_IsOK(ecode2)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode2), Ruby_Format_TypeError( "", "int","simplex_period_tile", 2, argv[0] ));
+  } 
+  arg2 = static_cast< int >(val2);
+  ecode3 = SWIG_AsVal_int(argv[1], &val3);
+  if (!SWIG_IsOK(ecode3)) {
+    SWIG_exception_fail(SWIG_ArgError(ecode3), Ruby_Format_TypeError( "", "int","simplex_period_tile", 3, argv[1] ));
+  } 
+  arg3 = static_cast< int >(val3);
+  result = (VALUE)FastNoise_simplex_period_tile(arg1,arg2,arg3);
+  vresult = result;
+  return vresult;
+fail:
+  return Qnil;
+}
+
+
 SWIGINTERN void
 free_FastNoise(void *self) {
     FastNoise *arg1 = (FastNoise *)self;
@@ -5981,6 +6159,9 @@ SWIGEXPORT void Init_FastNoise(void) {
   rb_define_method(SwigClassFastNoise.klass, "simplex", VALUEFUNC(_wrap_FastNoise_simplex), -1);
   rb_define_method(SwigClassFastNoise.klass, "white_noise", VALUEFUNC(_wrap_FastNoise_white_noise), -1);
   rb_define_method(SwigClassFastNoise.klass, "white_noise_int", VALUEFUNC(_wrap_FastNoise_white_noise_int), -1);
+  rb_define_method(SwigClassFastNoise.klass, "segment", VALUEFUNC(_wrap_FastNoise_segment), -1);
+  rb_define_method(SwigClassFastNoise.klass, "simplex_periodic", VALUEFUNC(_wrap_FastNoise_simplex_periodic), -1);
+  rb_define_method(SwigClassFastNoise.klass, "simplex_period_tile", VALUEFUNC(_wrap_FastNoise_simplex_period_tile), -1);
   SwigClassFastNoise.mark = 0;
   SwigClassFastNoise.destroy = (void (*)(void *)) free_FastNoise;
   SwigClassFastNoise.trackObjects = 0;
